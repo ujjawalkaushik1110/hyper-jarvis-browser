@@ -1,0 +1,35 @@
+{
+  "name": "hyper-jarvis-browser",
+  "version": "1.0.0",
+  "description": "AI-native browser with agentic reasoning. Controls browser automation, runs complex multi-step tasks, integrates with LLM reasoning (GPT/Claude/DeepSeek)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "browser-automation",
+    "playwright",
+    "llm",
+    "ai-agent",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "playwright": "^1.55.1",
+    "axios": "^1.12.0",
+    "winston": "^3.11.0",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
