@@ -292,9 +292,13 @@ class TaskOrchestrator {
 
   /**
    * Generate unique task ID
+   * Uses timestamp and random hex for uniqueness in concurrent scenarios
    */
   generateTaskId() {
-    return `task_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 15);
+    const random2 = Math.random().toString(36).substring(2, 15);
+    return `task_${timestamp}_${random}${random2}`;
   }
 
   /**

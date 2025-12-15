@@ -131,8 +131,35 @@ class LLMHandler {
    */
   async callDeepSeek(prompt, context) {
     try {
-      // DeepSeek typically uses OpenAI-compatible API
-      return await this.callOpenAI(prompt, context);
+      // DeepSeek uses OpenAI-compatible API format
+      // The apiUrl should be configured to point to DeepSeek endpoint
+      const response = await axios.post(
+        `${this.apiUrl}/chat/completions`,
+        {
+          model: this.model,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are an AI assistant helping with browser automation tasks. Analyze the task and provide structured action steps.'
+            },
+            {
+              role: 'user',
+              content: `Context: ${JSON.stringify(context)}\n\nTask: ${prompt}`
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 1000
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      const content = response.data.choices[0].message.content;
+      return this.parseResponse(content);
     } catch (error) {
       logger.error('DeepSeek API call failed', { error: error.message });
       throw error;
