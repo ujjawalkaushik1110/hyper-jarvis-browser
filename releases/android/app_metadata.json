@@ -1,0 +1,16 @@
+{
+  "app_name": "Hyper-Jarvis Browser",
+  "version": "1.0-beta",
+  "package_name": "com.hyperjarvis.browser",
+  "admins": [
+    "Ujjawal Kaushik",
+    "Jiya Singh"
+  ],
+  "description": "AI-Native browser with reasoning capabilities",
+  "min_sdk": 24,
+  "target_sdk": 33,
+  "permissions": [
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_NETWORK_STATE"
+  ]
+}

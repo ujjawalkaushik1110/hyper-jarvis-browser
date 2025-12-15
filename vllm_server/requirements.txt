@@ -1,0 +1,25 @@
+# vLLM Server Requirements for Hyper-Jarvis
+
+# Core LLM
+vllm>=0.3.0
+transformers>=4.35.0
+torch>=2.0.0
+
+# API
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Utils
+numpy>=1.24.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Monitoring
+prometheus-client>=0.18.0
+py
+uthon-json-logger>=2.0.0
+
+# Optional: CUDA support (if needed)
+# nvidia-cuda-runtime-cu118>=11.8.0

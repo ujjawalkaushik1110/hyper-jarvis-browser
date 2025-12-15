@@ -1,51 +1,48 @@
-# Use Node.js LTS version
-FROM node:18-bullseye
-
-# Install system dependencies required for Playwright
-RUN apt-get update && apt-get install -y \
-    libnss3 \
-    libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libdbus-1-3 \
-    libxkbcommon0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libpango-1.0-0 \
-    libcairo2 \
-    libasound2 \
-    libatspi2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
+# Use official NVIDIA CUDA image with Python
+FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Install Python and pip
+RUN apt-get update && apt-get install -y \
+    python3.10 \
+    python3.10-dev \
+    python3-pip \
+    git \
+    wget \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
-RUN npm ci --only=production
+# Set Python alias
+RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
-# Install Playwright browsers
-RUN npx playwright install chromium
-RUN npx playwright install-deps chromium
+# Copy requirements
+COPY vllm_server/requirements.txt .
 
-# Copy application files
-COPY . .
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Create logs directory
-RUN mkdir -p logs
+# Copy vLLM server code
+COPY vllm_server/ .
+
+# Set environment variables
+ENV HF_HOME=/app/huggingface_cache
+ENV MODEL_CACHE=/app/model_cache
+ENV PORT=8000
+ENV HOST=0.0.0.0
+ENV GPU_MEMORY_UTILIZATION=0.9
+ENV MAX_NUM_SEQS=256
+
+# Create cache directories
+RUN mkdir -p /app/huggingface_cache /app/model_cache
 
 # Expose port
-EXPOSE 3000
+EXPOSE 8000
 
-# Set environment to production
-ENV NODE_ENV=production
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
 
-# Run the application
-CMD ["node", "src/server.js"]
+# Run the vLLM server
+CMD ["python3", "-u", "deepseek_vllm_server.py"]
